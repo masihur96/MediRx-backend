@@ -1,0 +1,9 @@
+{
+  "auth": {
+    "invalid_credentials": "Invalid email or password",
+    "register_success": "Registered successfully"
+  },
+  "medication": {
+    "updated": "Medication updated successfully"
+  }
+}

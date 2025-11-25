@@ -1,0 +1,40 @@
+# ---------------------------
+# App Configuration
+# ---------------------------
+PORT=3000
+NODE_ENV=development
+
+# ---------------------------
+# Database (PostgreSQL)
+# ---------------------------
+
+DB_USER=postgres
+DB_PASS=password
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=medirx
+
+
+# ---------------------------
+# JWT Authentication
+# ---------------------------
+JWT_SECRET=supersecretkey123
+JWT_EXPIRES_IN=1d
+
+# ---------------------------
+# Redis (Bull Queue)
+# ---------------------------
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# ---------------------------
+# Internationalization (i18n)
+# ---------------------------
+DEFAULT_LANGUAGE=en
+
+# ---------------------------
+# Swagger
+# ---------------------------
+SWAGGER_TITLE=MediRx API
+SWAGGER_DESCRIPTION=MediRx Backend API Documentation
+SWAGGER_VERSION=1.0
