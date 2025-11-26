@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';  // <-- THIS PATH MUST BE CORRECT
+import { User } from './entities/user.entity';
+import { Patient } from './entities/patient.entity';
 import { UsersService } from './users.service';
 import { UserController } from './users.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Patient])],
   providers: [UsersService],
-   controllers: [UserController],
+  controllers: [UserController],
   exports: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule { }
 
 

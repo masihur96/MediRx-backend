@@ -1,10 +1,13 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { CreatePatientDto } from './dto/create-patient.dto';
+import { UsersService } from './users.service';
 
 @ApiTags('users') // Required for Swagger
 @Controller('users')
 export class UserController {
+  constructor(private readonly usersService: UsersService) { }
 
   @Get()
   @ApiOperation({ summary: 'Get all users' })
@@ -18,5 +21,19 @@ export class UserController {
   @ApiResponse({ status: 201, description: 'User created successfully' })
   create(@Body() createUserDto: CreateUserDto) {
     return { message: 'User created', user: createUserDto };
+  }
+
+  @Post('patients')
+  @ApiOperation({ summary: 'Register a new patient' })
+  @ApiResponse({ status: 201, description: 'Patient registered successfully' })
+  createPatient(@Body() createPatientDto: CreatePatientDto) {
+    return this.usersService.createPatient(createPatientDto);
+  }
+
+  @Get('patients')
+  @ApiOperation({ summary: 'Get all patients' })
+  @ApiResponse({ status: 200, description: 'List of patients' })
+  getAllPatients() {
+    return this.usersService.findAllPatients();
   }
 }
