@@ -31,6 +31,18 @@ export class AuthService {
     return { access_token: this.jwtService.sign(payload) };
   }
 
+  async validateDoctor(bmdcCode: string, pass: string) {
+    const doctor = await this.usersService.findDoctorByBmdcCode(bmdcCode);
+    if (!doctor) return null;
+    const match = await bcrypt.compare(pass, doctor.passwordHash);
+    return match ? doctor : null;
+  }
+
+  async loginDoctor(doctor: any) {
+    const payload = { sub: doctor.id, bmdcCode: doctor.bmdcCode, role: 'doctor' };
+    return { access_token: this.jwtService.sign(payload) };
+  }
+
   async register(data: { email: string, password: string, name?: string, locale?: string }) {
     const hash = await bcrypt.hash(data.password, 10);
     return this.usersService.create({ ...data, passwordHash: hash });

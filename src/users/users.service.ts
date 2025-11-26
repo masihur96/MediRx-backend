@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { Patient } from './entities/patient.entity';
+import { Doctor } from './entities/doctor.entity';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,8 @@ export class UsersService {
     private readonly repo: Repository<User>,
     @InjectRepository(Patient)
     private readonly patientRepo: Repository<Patient>,
+    @InjectRepository(Doctor)
+    private readonly doctorRepo: Repository<Doctor>,
   ) { }
 
   async create(data: Partial<User>): Promise<User> {
@@ -38,5 +41,21 @@ export class UsersService {
 
   async findAllPatients(): Promise<Patient[]> {
     return this.patientRepo.find();
+  }
+
+  async createDoctor(data: Partial<Doctor>): Promise<Doctor> {
+    if (data.passwordHash) {
+      data.passwordHash = await bcrypt.hash(data.passwordHash, 10);
+    }
+    const doctor = this.doctorRepo.create(data);
+    return this.doctorRepo.save(doctor);
+  }
+
+  async findDoctorByBmdcCode(bmdcCode: string): Promise<Doctor | null> {
+    return this.doctorRepo.findOne({ where: { bmdcCode } });
+  }
+
+  async findAllDoctors(): Promise<Doctor[]> {
+    return this.doctorRepo.find();
   }
 }

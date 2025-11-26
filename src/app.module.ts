@@ -10,6 +10,8 @@ import { ReportsModule } from './reports/reports.module';
 import { AiModule } from './ai/ai.module';
 import { SettingsModule } from './settings/settings.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 // import { i18nConfig } from './i18n.config';
 
 @Module({
@@ -44,5 +46,10 @@ ConfigModule.forRoot({
     AiModule,
     SettingsModule,
   ],
+
+
+  // 👇 ADD THESE
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
