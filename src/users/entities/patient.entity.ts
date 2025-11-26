@@ -19,4 +19,5 @@ export class Patient {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  
 }

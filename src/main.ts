@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 🔥 Swagger Configuration
+  // Swagger setup
   const config = new DocumentBuilder()
     .setTitle('MediRx API')
     .setDescription('API docs for MediRx')
@@ -14,11 +15,22 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // localhost:3000/api
+  SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(`🚀 Server running on http://localhost:3000`);
-  console.log(`📘 Swagger Docs: http://localhost:3000/api`);
+  // ✅ Get environment variables from ConfigService
+  const configService = app.get(ConfigService);
+
+  console.log('ENV CHECK:', {
+    PORT: configService.get('PORT'),
+    DB_HOST: configService.get('DB_HOST'),
+    NODE_ENV: configService.get('NODE_ENV'),
+  });
+
+  const port = configService.get<number>('PORT') || 3000;
+  await app.listen(port);
+
+  console.log(`🚀 Server running on http://localhost:${port}`);
+  console.log(`📘 Swagger Docs: http://localhost:${port}/api`);
 }
 
 bootstrap();
