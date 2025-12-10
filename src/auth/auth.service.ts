@@ -72,15 +72,7 @@ export class AuthService {
       bmdcCode: user.bmdcCode
     };
     return {
-      access_token: this.jwtService.sign(payload),
-      user: {
-        id: user.id,
-        name: user.name,
-        role: user.role,
-        email: user.email,
-        phone: user.phone,
-        bmdcCode: user.bmdcCode
-      }
+      access_token: this.jwtService.sign(payload)
     };
   }
 
