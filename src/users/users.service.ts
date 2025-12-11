@@ -42,7 +42,7 @@ export class UsersService {
     return this.userRepo.save(user);
   }
 
-  
+
   /**
    * Validate that required fields are present based on role
    */
@@ -126,5 +126,25 @@ export class UsersService {
 
   async findAllAdmins(): Promise<User[]> {
     return this.userRepo.find({ where: { role: UserRole.ADMIN } });
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
+    console.log(`Updating refresh token for user ${userId}`);
+    try {
+      const salt = await bcrypt.genSalt();
+      const refreshTokenHash = await bcrypt.hash(refreshToken, salt);
+
+      // using save instead of update to ensure it works
+      const user = await this.findById(userId);
+      if (user) {
+        user.refreshTokenHash = refreshTokenHash;
+        await this.userRepo.save(user);
+        console.log(`Refresh token updated for user ${userId}`);
+      } else {
+        console.error(`User ${userId} not found during refresh token update`);
+      }
+    } catch (error) {
+      console.error(`Error updating refresh token for user ${userId}:`, error);
+    }
   }
 }

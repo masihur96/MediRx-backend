@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 // import { LoginPatientDto } from './dto/login-patient.dto';
 // import { LoginDoctorDto } from './dto/login-doctor.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('auth')
@@ -22,7 +23,15 @@ export class AuthController {
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        return this.authService.generateToken(user);
+        return this.authService.login(user);
+    }
+
+    @Post('refresh')
+    @ApiOperation({ summary: 'Refresh access token using a refresh token' })
+    @ApiResponse({ status: 200, description: 'Return new access and refresh tokens' })
+    @ApiResponse({ status: 401, description: 'Invalid refresh token' })
+    async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto) {
+        return this.authService.refreshAccessToken(refreshTokenDto.refreshToken);
     }
 
     // @Post('login/patient')

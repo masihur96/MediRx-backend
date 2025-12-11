@@ -72,7 +72,8 @@ export class AuthService {
       bmdcCode: user.bmdcCode
     };
     return {
-      access_token: this.jwtService.sign(payload)
+      access_token: this.jwtService.sign(payload),
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' })
     };
   }
 
@@ -85,10 +86,38 @@ export class AuthService {
     return match ? user : null;
   }
 
-  
+
 
   async login(user: any) {
-    return this.generateToken(user);
+    const tokens = await this.generateToken(user);
+    await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
+    return tokens;
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+      const user = await this.usersService.findById(payload.sub);
+
+      if (!user || !user.refreshTokenHash) {
+        throw new UnauthorizedException('Access denied');
+      }
+
+      const isRefreshTokenMatching = await bcrypt.compare(
+        refreshToken,
+        user.refreshTokenHash,
+      );
+
+      if (!isRefreshTokenMatching) {
+        throw new UnauthorizedException('Access denied');
+      }
+
+      const tokens = await this.generateToken(user);
+      await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
+      return tokens;
+    } catch (e) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 
 }
