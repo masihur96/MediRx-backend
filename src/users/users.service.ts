@@ -2,6 +2,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User, UserRole } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,6 +15,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    private readonly jwtService: JwtService,
   ) { }
 
   /**
@@ -145,6 +147,19 @@ export class UsersService {
       }
     } catch (error) {
       console.error(`Error updating refresh token for user ${userId}:`, error);
+    }
+  }
+
+  async getUserByAccessToken(token: string): Promise<User | null> {
+
+  console.log('Incoming token:', token);
+    try {
+      // Extract token from "Bearer <token>"
+      const extractedToken = token.replace('Bearer ', '');
+      const payload = this.jwtService.verify(extractedToken);
+      return this.findById(payload.sub);
+    } catch (error) {
+      throw new BadRequestException('Invalid access token');
     }
   }
 }

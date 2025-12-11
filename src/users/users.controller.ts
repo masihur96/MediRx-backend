@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Headers as RequestHeaders } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
-
+import { Headers } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @ApiTags('users') // Required for Swagger
@@ -16,6 +16,7 @@ export class UserController {
     return this.usersService.findAllUsers();
   }
 
+
   @Post()
   @ApiOperation({ summary: 'Create a new user with role-based validation' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
@@ -23,12 +24,13 @@ export class UserController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Get Single user' })
-  @ApiResponse({ status: 200, description: 'Object of users' })
-  getProfile() {
-    return this.usersService.findById('97b42916-fca6-4bb7-8078-64ab45a40e27'); // Example: Fetch user with ID 1
-  }
+@Get('profile')
+@ApiOperation({ summary: 'Get Single user' })
+@ApiResponse({ status: 200, description: 'Object of users' })
+getProfile(@Headers('authorization') token: string) {
+  console.log('Incoming token from Controller:', token);
+  return this.usersService.getUserByAccessToken(token);
+}
 
 
   @Get('patients')
@@ -47,7 +49,7 @@ export class UserController {
     return this.usersService.findAllDoctors();
   }
 
- 
+
   @Get('admins')
   @ApiOperation({ summary: 'Get all admins' })
   @ApiResponse({ status: 200, description: 'List of admins' })
