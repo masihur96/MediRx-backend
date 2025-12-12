@@ -7,12 +7,15 @@ import { User } from '../users/entities/user.entity';
 enum CredentialType {
   EMAIL = 'email',
   PHONE = 'phone',
-  BMDC = 'bmdc'
+  BMDC = 'bmdc',
 }
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService, private jwtService: JwtService) { }
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   /**
    * Detect the type of credential (email, phone, or BMDC code)
@@ -36,7 +39,10 @@ export class AuthService {
   /**
    * Unified credential validation - auto-detects credential type
    */
-  async validateCredential(credential: string, password: string): Promise<User | null> {
+  async validateCredential(
+    credential: string,
+    password: string,
+  ): Promise<User | null> {
     const credentialType = this.detectCredentialType(credential);
     let user: User | null = null;
 
@@ -69,11 +75,11 @@ export class AuthService {
       role: user.role,
       email: user.email,
       phone: user.phone,
-      bmdcCode: user.bmdcCode
+      bmdcCode: user.bmdcCode,
     };
     return {
       access_token: this.jwtService.sign(payload),
-      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' })
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
   }
 
@@ -85,8 +91,6 @@ export class AuthService {
     const match = await bcrypt.compare(pass, user.passwordHash);
     return match ? user : null;
   }
-
-
 
   async login(user: any) {
     const tokens = await this.generateToken(user);
@@ -119,5 +123,4 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
-
 }

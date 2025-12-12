@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 @Entity()
@@ -21,12 +27,11 @@ export class Medication {
   @Column('text', { nullable: true })
   instructions: string;
 
-//   @ManyToOne(() => User, user => user.medications)
-//   owner: User;
+  //   @ManyToOne(() => User, user => user.medications)
+  //   owner: User;
 
-  @ManyToOne(() => User, user => user.medications)
-  user: User;  // rename from 'owner' to 'user'
-
+  @ManyToOne(() => User, (user) => user.medications)
+  user: User; // rename from 'owner' to 'user'
 
   @CreateDateColumn()
   createdAt: Date;

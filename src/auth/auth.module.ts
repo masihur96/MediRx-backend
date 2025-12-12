@@ -5,15 +5,15 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 
 @Module({
-    imports: [
-        UsersModule,
-        JwtModule.register({
-            secret: 'secretKey', // In production, use environment variable
-            signOptions: { expiresIn: '60m' },
-        }),
-    ],
-    providers: [AuthService],
-    controllers: [AuthController],
-    exports: [AuthService],
+  imports: [
+    UsersModule,
+    JwtModule.register({
+      secret: 'secretKey', // In production, use environment variable
+      signOptions: { expiresIn: '60m' },
+    }),
+  ],
+  providers: [AuthService],
+  controllers: [AuthController],
+  exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

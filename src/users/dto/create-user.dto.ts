@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, IsEmail, IsOptional, MinLength, ValidateIf } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  IsEmail,
+  IsOptional,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 import { UserRole } from '../entities/user.entity';
 
 export class CreateUserDto {
@@ -8,7 +16,11 @@ export class CreateUserDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ example: 'password123', description: 'User password', minLength: 6 })
+  @ApiProperty({
+    example: 'password123',
+    description: 'User password',
+    minLength: 6,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(6)
@@ -17,7 +29,7 @@ export class CreateUserDto {
   @ApiProperty({
     example: UserRole.PATIENT,
     description: 'User role',
-    enum: UserRole
+    enum: UserRole,
   })
   @IsEnum(UserRole)
   @IsNotEmpty()
@@ -27,12 +39,12 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'admin@example.com',
     description: 'Email (required for admin)',
-    required: false
+    required: false,
   })
-  @ValidateIf(o => o.role === UserRole.ADMIN)
+  @ValidateIf((o) => o.role === UserRole.ADMIN)
   @IsEmail()
   @IsNotEmpty({ message: 'Email is required for admin users' })
-  @ValidateIf(o => o.role !== UserRole.ADMIN)
+  @ValidateIf((o) => o.role !== UserRole.ADMIN)
   @IsOptional()
   @IsEmail()
   email?: string;
@@ -41,12 +53,12 @@ export class CreateUserDto {
   @ApiProperty({
     example: '+8801712345678',
     description: 'Phone number (required for patient and doctor)',
-    required: false
+    required: false,
   })
-  @ValidateIf(o => o.role === UserRole.PATIENT || o.role === UserRole.DOCTOR)
+  @ValidateIf((o) => o.role === UserRole.PATIENT || o.role === UserRole.DOCTOR)
   @IsString()
   @IsNotEmpty({ message: 'Phone is required for patient and doctor users' })
-  @ValidateIf(o => o.role === UserRole.ADMIN)
+  @ValidateIf((o) => o.role === UserRole.ADMIN)
   @IsOptional()
   @IsString()
   phone?: string;
@@ -55,12 +67,12 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'A-12345',
     description: 'BMDC registration code (required for doctor)',
-    required: false
+    required: false,
   })
-  @ValidateIf(o => o.role === UserRole.DOCTOR)
+  @ValidateIf((o) => o.role === UserRole.DOCTOR)
   @IsString()
   @IsNotEmpty({ message: 'BMDC code is required for doctor users' })
-  @ValidateIf(o => o.role !== UserRole.DOCTOR)
+  @ValidateIf((o) => o.role !== UserRole.DOCTOR)
   @IsOptional()
   @IsString()
   bmdcCode?: string;

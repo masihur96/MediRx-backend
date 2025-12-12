@@ -5,10 +5,11 @@ import { Medication } from './entities/medication.entity';
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { UpdateMedicationDto } from './dto/update-medication.dto';
 
-
 @Injectable()
 export class MedicationsService {
-  constructor(@InjectRepository(Medication) private repo: Repository<Medication>) { }
+  constructor(
+    @InjectRepository(Medication) private repo: Repository<Medication>,
+  ) {}
 
   create(dto: CreateMedicationDto) {
     const med = this.repo.create(dto);

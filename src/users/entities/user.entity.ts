@@ -1,11 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Medication } from '../../medications/entities/medication.entity';
 
 // Enum for user roles
 export enum UserRole {
   PATIENT = 'patient',
   DOCTOR = 'doctor',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
 }
 
 @Entity('users')
@@ -17,15 +25,17 @@ export class User {
   name: string;
 
   @Column()
+  @Exclude()
   passwordHash: string;
 
   @Column({ nullable: true })
+  @Exclude()
   refreshTokenHash: string;
 
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.PATIENT
+    default: UserRole.PATIENT,
   })
   role: UserRole;
 
@@ -47,6 +57,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Medication, medication => medication.user)
+  @OneToMany(() => Medication, (medication) => medication.user)
   medications: Medication[];
 }

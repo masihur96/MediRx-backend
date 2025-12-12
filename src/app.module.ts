@@ -16,11 +16,10 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [
-ConfigModule.forRoot({
-  isGlobal: true,
-  envFilePath: '.env',   // 👈 Force NestJS to load .env
-}),
-
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env', // 👈 Force NestJS to load .env
+    }),
 
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -46,7 +45,6 @@ ConfigModule.forRoot({
     AiModule,
     SettingsModule,
   ],
-
 
   // 👇 ADD THESE
   controllers: [AppController],

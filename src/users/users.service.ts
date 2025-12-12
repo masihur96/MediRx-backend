@@ -16,7 +16,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   /**
    * Create a user with role-based field validation
@@ -44,7 +44,6 @@ export class UsersService {
     return this.userRepo.save(user);
   }
 
-
   /**
    * Validate that required fields are present based on role
    */
@@ -60,7 +59,9 @@ export class UsersService {
           throw new BadRequestException('Phone is required for doctor users');
         }
         if (!data.bmdcCode) {
-          throw new BadRequestException('BMDC code is required for doctor users');
+          throw new BadRequestException(
+            'BMDC code is required for doctor users',
+          );
         }
         break;
       case UserRole.ADMIN:
@@ -76,21 +77,27 @@ export class UsersService {
    */
   private async checkDuplicateCredentials(data: CreateUserDto): Promise<void> {
     if (data.email) {
-      const existingEmail = await this.userRepo.findOne({ where: { email: data.email } });
+      const existingEmail = await this.userRepo.findOne({
+        where: { email: data.email },
+      });
       if (existingEmail) {
         throw new BadRequestException('Email already exists');
       }
     }
 
     if (data.phone) {
-      const existingPhone = await this.userRepo.findOne({ where: { phone: data.phone } });
+      const existingPhone = await this.userRepo.findOne({
+        where: { phone: data.phone },
+      });
       if (existingPhone) {
         throw new BadRequestException('Phone number already exists');
       }
     }
 
     if (data.bmdcCode) {
-      const existingBmdc = await this.userRepo.findOne({ where: { bmdcCode: data.bmdcCode } });
+      const existingBmdc = await this.userRepo.findOne({
+        where: { bmdcCode: data.bmdcCode },
+      });
       if (existingBmdc) {
         throw new BadRequestException('BMDC code already exists');
       }
@@ -130,7 +137,10 @@ export class UsersService {
     return this.userRepo.find({ where: { role: UserRole.ADMIN } });
   }
 
-  async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
+  async updateRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<void> {
     console.log(`Updating refresh token for user ${userId}`);
     try {
       const salt = await bcrypt.genSalt();
@@ -151,8 +161,7 @@ export class UsersService {
   }
 
   async getUserByAccessToken(token: string): Promise<User | null> {
-
-  console.log('Incoming token:', token);
+    console.log('Incoming token:', token);
     try {
       // Extract token from "Bearer <token>"
       const extractedToken = token.replace('Bearer ', '');
