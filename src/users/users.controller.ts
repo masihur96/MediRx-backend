@@ -6,12 +6,18 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Headers } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @ApiTags('users') // Required for Swagger
+@ApiBearerAuth('access-token')
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {

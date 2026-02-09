@@ -42,7 +42,7 @@ describe('UserController', () => {
       mockUsersService.getUserByAccessToken.mockResolvedValue(expectedUser);
 
       const req = { headers: { authorization: token } };
-      const result = await controller.getProfile(req);
+      const result = await controller.getProfile(token);
 
       expect(usersService.getUserByAccessToken).toHaveBeenCalledWith(token);
       expect(result).toEqual(expectedUser);

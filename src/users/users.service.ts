@@ -16,7 +16,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   /**
    * Create a user with role-based field validation
@@ -160,14 +160,31 @@ export class UsersService {
     }
   }
 
-  async getUserByAccessToken(token: string): Promise<User | null> {
+  async getUserByAccessToken(token: string | undefined): Promise<User | null> {
     console.log('Incoming token:', token);
+
+    if (!token) {
+      throw new BadRequestException('Authorization header is missing');
+    }
+
     try {
-      // Extract token from "Bearer <token>"
-      const extractedToken = token.replace('Bearer ', '');
+      // Extract token using regex to handle "Bearer" case-insensitively
+      const match = token.match(/^Bearer\s+(.+)$/i);
+      const extractedToken = match ? match[1] : token;
+
       const payload = this.jwtService.verify(extractedToken);
-      return this.findById(payload.sub);
+
+      const user = await this.findById(payload.sub);
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+
+      return user;
     } catch (error) {
+      console.error('JWT verification failed:', error.message);
+      if (error.name === 'TokenExpiredError') {
+        throw new BadRequestException('Access token has expired');
+      }
       throw new BadRequestException('Invalid access token');
     }
   }
